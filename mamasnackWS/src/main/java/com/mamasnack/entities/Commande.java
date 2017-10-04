@@ -4,13 +4,14 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-
+@Entity
 public class Commande  implements Serializable {
 	/**
 	 * 
@@ -21,11 +22,15 @@ public class Commande  implements Serializable {
 	private Long idCommande;
 	private String etatCommande;
 	private Date dateCommnade;
-	@OneToMany(mappedBy="commande")
+	@OneToMany(mappedBy="commande" , targetEntity=LigneCommande.class)
 	private Collection<LigneCommande> items ;
 	@ManyToOne
 	@JoinColumn(name="idUser")
 	private User user ;
+	@ManyToOne
+	@JoinColumn(name="numCarte")
+	private Reglement reglement;
+	
 	public Long getIdCommande() {
 		return idCommande;
 	}

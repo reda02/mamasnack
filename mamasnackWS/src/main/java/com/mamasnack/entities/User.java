@@ -4,46 +4,82 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 @Entity
 public class User implements Serializable{
-	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8014181077416730759L;
+	private static final long serialVersionUID = 3335184341463928468L;
+	/**
+	 * 
+	 */
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "idUser", nullable = false)
 	private Long idUser;
 	@NotNull
-	@Size(min=1,max=4)
+	@Size(min=1,max=10)
 	private String nomUser;
 	private String prenomUser;
 	private String email;
 	private String photo;
 	private String adresse;
-	private String tel;
+	private int tel;
 	private String ville;
-	private String codePostale;
+	private int codePostale;
 	private Date dateNaissonce;
 	private String password;
 	private boolean actived;
+	private boolean mamaActived;
 	@OneToMany(mappedBy="user")
 	private Collection<Commande>commande;
-	@OneToMany
-	@JoinColumn(name="idUser")
-	private Collection<Role>role;
-	
-	
-	public User(String nomUser, String prenomUser, String email, String photo, String adresse, String tel, String ville,
-			String codePostale, Date dateNaissonce, String password, boolean actived) {
+	@ManyToMany(targetEntity=Role.class)
+	@JoinTable(name="UsersAndRoles",
+	joinColumns=@JoinColumn(name="idUser"),
+	inverseJoinColumns=@JoinColumn(name="idRole"))
+	private Collection<Role> role;
+
+	@ManyToMany
+	@JoinTable(name="UsersAndMessage",
+	joinColumns={
+			@JoinColumn(name="idUserExp", referencedColumnName="idUser", nullable = false)},
+
+	inverseJoinColumns=@JoinColumn( name="idMsg"))
+	private Collection<Message>message;
+
+
+	@ManyToMany
+	@JoinTable(name="UsersAndMessage",
+	joinColumns={
+			@JoinColumn(name="idUserExp", referencedColumnName="idUser", nullable = false)},
+	inverseJoinColumns = {
+			@JoinColumn(name = "idUserDist", referencedColumnName = "idUser", nullable = false)})
+	//	inverseJoinColumns=@JoinColumn( name="idMsg"))
+	private Collection<User>users;
+	public User() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+
+	public User(@NotNull @Size(min = 1, max = 10) String nomUser, String prenomUser, String email, String photo,
+			String adresse, int tel, String ville, int codePostale, Date dateNaissonce, String password,
+			boolean actived, boolean mamaActived) {
 		super();
 		this.nomUser = nomUser;
 		this.prenomUser = prenomUser;
@@ -56,11 +92,11 @@ public class User implements Serializable{
 		this.dateNaissonce = dateNaissonce;
 		this.password = password;
 		this.actived = actived;
+		this.mamaActived = mamaActived;
 	}
-	public User() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+
+
+
 	public Long getIdUser() {
 		return idUser;
 	}
@@ -69,20 +105,6 @@ public class User implements Serializable{
 	}
 	public String getNomUser() {
 		return nomUser;
-	}
-	public User(String nomUser, String prenomUser, String email, String photo, String adresse, String tel, String ville,
-			String codePostale, Date dateNaissonce, String password) {
-		super();
-		this.nomUser = nomUser;
-		this.prenomUser = prenomUser;
-		this.email = email;
-		this.photo = photo;
-		this.adresse = adresse;
-		this.tel = tel;
-		this.ville = ville;
-		this.codePostale = codePostale;
-		this.dateNaissonce = dateNaissonce;
-		this.password = password;
 	}
 	public void setNomUser(String nomUser) {
 		this.nomUser = nomUser;
@@ -111,10 +133,10 @@ public class User implements Serializable{
 	public void setAdresse(String adresse) {
 		this.adresse = adresse;
 	}
-	public String getTel() {
+	public int getTel() {
 		return tel;
 	}
-	public void setTel(String tel) {
+	public void setTel(int tel) {
 		this.tel = tel;
 	}
 	public String getVille() {
@@ -123,10 +145,10 @@ public class User implements Serializable{
 	public void setVille(String ville) {
 		this.ville = ville;
 	}
-	public String getCodePostale() {
+	public int getCodePostale() {
 		return codePostale;
 	}
-	public void setCodePostale(String codePostale) {
+	public void setCodePostale(int codePostale) {
 		this.codePostale = codePostale;
 	}
 	public Date getDateNaissonce() {
@@ -153,6 +175,18 @@ public class User implements Serializable{
 	}
 	public void setActived(boolean actived) {
 		this.actived = actived;
+	}
+	public boolean isMamaActived() {
+		return mamaActived;
+	}
+	public void setMamaActived(boolean mamaActived) {
+		this.mamaActived = mamaActived;
+	}
+	public Collection<Role> getRole() {
+		return role;
+	}
+	public void setRole(Collection<Role> role) {
+		this.role = role;
 	}
 
 }

@@ -21,9 +21,10 @@ public class LigneCommande   implements Serializable{
 	@ManyToOne
 	@JoinColumn(name="idProduit")
 	private Produit produit ;
-	@ManyToOne
+	@ManyToOne(targetEntity=Commande.class)
 	@JoinColumn(name="idCommande")
 	private Commande commande ;
+	
 	public Long getIdLigneCommande() {
 		return idLigneCommande;
 	}

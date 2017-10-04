@@ -35,7 +35,20 @@ public class Produit implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="idCategorie")
 	private Categorie categorie ;
+	@ManyToOne
+	@JoinColumn(name="idCuisine")
+	private Cuisine cuisine ;
 	
+	
+	
+	
+	
+	public Cuisine getCuisine() {
+		return cuisine;
+	}
+	public void setCuisine(Cuisine cuisine) {
+		this.cuisine = cuisine;
+	}
 	public Long getIdProduit() {
 		return idProduit;
 	}

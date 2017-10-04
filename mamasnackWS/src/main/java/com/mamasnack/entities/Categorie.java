@@ -32,6 +32,8 @@ public class Categorie implements Serializable {
 	@OneToMany(mappedBy="categorie")
 	private Collection<Produit>produit ;
 	
+	
+	
 	public Long getIdCategorie() {
 		return idCategorie;
 	}
