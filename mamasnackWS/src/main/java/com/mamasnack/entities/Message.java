@@ -1,15 +1,19 @@
 package com.mamasnack.entities;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
 @Entity
-public class Message {
+public class Message  implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -932642278553084089L;
 	@Id
 	private Long idMsg;
 	private String distinataire;

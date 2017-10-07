@@ -8,6 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.xml.bind.annotation.XmlTransient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 public class Role  implements Serializable{
 	/**
@@ -41,6 +44,14 @@ public class Role  implements Serializable{
 	public Role(String roleName) {
 		super();
 		this.roleName = roleName;
+	}
+	@JsonIgnore
+	@XmlTransient
+	public List<User> getUser() {
+		return User;
+	}
+	public void setUser(List<User> user) {
+		User = user;
 	}
 
 	

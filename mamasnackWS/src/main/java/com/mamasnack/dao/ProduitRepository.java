@@ -1,0 +1,25 @@
+package com.mamasnack.dao;
+
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import com.mamasnack.entities.Produit;
+
+
+
+
+public interface ProduitRepository extends JpaRepository<Produit, Long>{
+
+	@Query("SELECT o FROM Produit o INNER JOIN  o.categorie c WHERE c.idCategorie like :x")
+	public List<Produit> findProduitsParCategorie(@Param("x") Long idCat);
+	
+	@Query("SELECT o FROM Produit o INNER JOIN  o.cuisine c WHERE c.idCuisine like :x")
+	public List<Produit> findProduitsParCuisine(@Param("x") Long idCuisine);
+
+	@Query("SELECT p FROM Produit p WHERE  p.steleted = true")
+	public List<Produit> findProduitsSelectionne(); 
+}

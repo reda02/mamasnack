@@ -15,6 +15,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class User implements Serializable{
@@ -163,7 +166,8 @@ public class User implements Serializable{
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
+	@JsonIgnore
+	@XmlTransient
 	public Collection<Commande> getCommande() {
 		return commande;
 	}
@@ -182,6 +186,8 @@ public class User implements Serializable{
 	public void setMamaActived(boolean mamaActived) {
 		this.mamaActived = mamaActived;
 	}
+	@JsonIgnore
+	@XmlTransient
 	public Collection<Role> getRole() {
 		return role;
 	}
