@@ -8,6 +8,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonSetter;
 @Entity
 public class Cuisine  implements Serializable{
 
@@ -23,8 +27,10 @@ public class Cuisine  implements Serializable{
 	private Long idCuisine ;
 	private String nameCuisine ;
 	private String langue ;
+	@JsonManagedReference("cuisine")
 	@OneToMany(mappedBy="categorie")
 	private Collection<Produit>produit ;
+	
 	public Long getIdCuisine() {
 		return idCuisine;
 	}
@@ -43,9 +49,11 @@ public class Cuisine  implements Serializable{
 	public void setLangue(String langue) {
 		this.langue = langue;
 	}
+	@JsonIgnore
 	public Collection<Produit> getProduit() {
 		return produit;
 	}
+	@JsonSetter
 	public void setProduit(Collection<Produit> produit) {
 		this.produit = produit;
 	}

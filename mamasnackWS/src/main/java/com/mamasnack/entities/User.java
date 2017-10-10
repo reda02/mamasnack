@@ -6,6 +6,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -48,7 +49,7 @@ public class User implements Serializable{
 	private String password;
 	private boolean actived;
 	private boolean mamaActived;
-	@OneToMany(mappedBy="user")
+	@OneToMany(mappedBy="user",fetch=FetchType.LAZY)
 	private Collection<Commande>commande;
 	@ManyToMany(targetEntity=Role.class)
 	@JoinTable(name="UsersAndRoles",
@@ -73,6 +74,7 @@ public class User implements Serializable{
 			@JoinColumn(name = "idUserDist", referencedColumnName = "idUser", nullable = false)})
 	//	inverseJoinColumns=@JoinColumn( name="idMsg"))
 	private Collection<User>users;
+	
 	public User() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -96,6 +98,29 @@ public class User implements Serializable{
 		this.password = password;
 		this.actived = actived;
 		this.mamaActived = mamaActived;
+	}
+
+
+
+	public User(Long idUser, @NotNull @Size(min = 1, max = 10) String nomUser, String prenomUser, String email,
+			String photo, String adresse, int tel, String ville, int codePostale, Date dateNaissonce, String password,
+			boolean actived, boolean mamaActived, Collection<Commande> commande, Collection<Message> message) {
+		super();
+		this.idUser = idUser;
+		this.nomUser = nomUser;
+		this.prenomUser = prenomUser;
+		this.email = email;
+		this.photo = photo;
+		this.adresse = adresse;
+		this.tel = tel;
+		this.ville = ville;
+		this.codePostale = codePostale;
+		this.dateNaissonce = dateNaissonce;
+		this.password = password;
+		this.actived = actived;
+		this.mamaActived = mamaActived;
+		this.commande = commande;
+		this.message = message;
 	}
 
 
@@ -166,11 +191,12 @@ public class User implements Serializable{
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	@JsonIgnore
-	@XmlTransient
+	
 	public Collection<Commande> getCommande() {
 		return commande;
 	}
+	@JsonIgnore
+	@XmlTransient
 	public void setCommande(Collection<Commande> commande) {
 		this.commande = commande;
 	}
@@ -186,11 +212,13 @@ public class User implements Serializable{
 	public void setMamaActived(boolean mamaActived) {
 		this.mamaActived = mamaActived;
 	}
-	@JsonIgnore
-	@XmlTransient
+
 	public Collection<Role> getRole() {
 		return role;
 	}
+	
+	@JsonIgnore
+	@XmlTransient
 	public void setRole(Collection<Role> role) {
 		this.role = role;
 	}

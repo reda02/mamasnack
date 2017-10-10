@@ -20,6 +20,12 @@ public interface ProduitRepository extends JpaRepository<Produit, Long>{
 	@Query("SELECT o FROM Produit o INNER JOIN  o.cuisine c WHERE c.idCuisine like :x")
 	public List<Produit> findProduitsParCuisine(@Param("x") Long idCuisine);
 
-	@Query("SELECT p FROM Produit p WHERE  p.steleted = true")
-	public List<Produit> findProduitsSelectionne(); 
+	@Query("SELECT p FROM Produit p WHERE p.steleted = true")
+	public List<Produit> findProduitsSelectionne();
+
+	@Query("SELECT p FROM Produit p WHERE  p.idProduit like :x")
+	public Produit findOne(@Param("x") Long idPro);
+	
+	@Query("SELECT p FROM Produit p WHERE  p.idProduit like :x")
+	public boolean existsProduit(Long idProduit); 
 }

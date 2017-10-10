@@ -4,14 +4,20 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 @Entity
@@ -23,7 +29,6 @@ public class Produit implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long idProduit;
-	@NotNull
 	@Size(min=1,max=4)
 	private String designation;
 	private String description;
@@ -32,20 +37,27 @@ public class Produit implements Serializable {
 	private String photo;
 	private int quantite ;
 	private Date dateAjout;
-	@ManyToOne
+	
+	
+	
+	@JsonBackReference("cat")
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="idCategorie")
 	private Categorie categorie ;
-	@ManyToOne
+	
+	@JsonBackReference("cuisine")
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="idCuisine")
 	private Cuisine cuisine ;
 	
 	
 	
 	
-	
+	@JsonIgnore
 	public Cuisine getCuisine() {
 		return cuisine;
 	}
+	@JsonSetter
 	public void setCuisine(Cuisine cuisine) {
 		this.cuisine = cuisine;
 	}
@@ -91,9 +103,11 @@ public class Produit implements Serializable {
 	public void setQuantite(int quantite) {
 		this.quantite = quantite;
 	}
+	@JsonIgnore
 	public Categorie getCategorie() {
 		return categorie;
 	}
+	@JsonSetter
 	public void setCategorie(Categorie categorie) {
 		this.categorie = categorie;
 	}
@@ -108,8 +122,9 @@ public class Produit implements Serializable {
 	public void setDateAjout(Date dateAjout) {
 		this.dateAjout = dateAjout;
 	}
-	public Produit(String designation, String description, Double prix, boolean steleted, String photo, int quantite,
-			Date dateAjout) {
+	
+	public Produit(@Size(min = 1, max = 4) String designation, String description, Double prix, boolean steleted,
+			String photo, int quantite, Date dateAjout, Categorie categorie, Cuisine cuisine) {
 		super();
 		this.designation = designation;
 		this.description = description;
@@ -118,7 +133,10 @@ public class Produit implements Serializable {
 		this.photo = photo;
 		this.quantite = quantite;
 		this.dateAjout = dateAjout;
+		this.categorie = categorie;
+		this.cuisine = cuisine;
 	}
+	
 
 	
 }

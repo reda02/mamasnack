@@ -13,12 +13,15 @@ public interface UserMetier {
 	public User getUser(Long idUser); 
 	
 	public List<User> listUsers();
-	public User findUserbyName(String nameUser);
+	public List<User> findUserbyName(String nameUser);
 	
 	//   Gestion Role
-	public void attribueRole(User u, Role e);
+	public void attribueRole(Long iduser, Long idrole);
+	public Role getRole(Long idRole); 
 	public Role addRole(Role e);
 	public List<User> findUsersbyRole(Long idRole);
+	public List<Role> findRolebyUser(Long iduser);
+	public void retirerRole(Long idUser, Long idRole);
 	
 
 }

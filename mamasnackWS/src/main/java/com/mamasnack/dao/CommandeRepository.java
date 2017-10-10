@@ -12,12 +12,11 @@ import com.mamasnack.entities.Commande;
 
 	public interface CommandeRepository extends JpaRepository<Commande, Long>{
 
-	/*	@Query("SELECT o FROM user o INNER JOIN  o.commande  WHERE o.idUser like :x")
+        @Query("SELECT o FROM User o INNER JOIN  o.commande  WHERE o.idUser like :x")
 		public List<Commande> findCommandesParUser(@Param("x") Long idUser);
 		
-		// a modifier
+        /*// a modifier
 		@Query("SELECT o FROM produit JOIN FETCH o.categorie c WHERE c.idCategorie like :x")
 		public List<Commande> findCommandesParProduit(@Param("x")Long idProduit); */
-		
 		
 	}

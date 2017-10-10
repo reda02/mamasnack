@@ -28,7 +28,7 @@ public class ProduitMetierImpl implements ProduitMetier {
 	@Override
 	public Long ajouterProduit(Produit p, Long IdCat) {
 		
-		p.setCategorie(getCategorie(IdCat));
+		//p.setCategorie(getCategorie(IdCat));
 		if (p.getIdProduit() != null && produitRepository.existsById(p.getIdProduit())) {
 			throw new EntityExistsException("There is already existing entity with such ID in the database.");
 		}
@@ -39,7 +39,7 @@ public class ProduitMetierImpl implements ProduitMetier {
 	@Override
 	public Produit getProduit(Long idPro) {
 		
-		Produit produit= produitRepository.getOne(idPro) ;
+		Produit produit= produitRepository.findOne(idPro) ;
 		if (produit==null)throw new RuntimeException("produit inexistant !");
 		return produit;
 	}
@@ -52,7 +52,7 @@ public class ProduitMetierImpl implements ProduitMetier {
 	@Override
 	public void modifierProduit(Produit p) {
 		if (p.getIdProduit() != null && !produitRepository.existsById(p.getIdProduit())) {
-			throw new EntityExistsException("There is already existing entity with such ID in the database.");
+			throw new EntityExistsException("There isn't already existing entity with such ID in the database.");
 		}
 		produitRepository.save(p);
 		
@@ -94,7 +94,7 @@ public class ProduitMetierImpl implements ProduitMetier {
 
 	@Override
 	public Categorie getCategorie(Long idC) {
-		Categorie categorie= categorieRepository.getOne(idC) ;
+		Categorie categorie= categorieRepository.findOne(idC) ;
 		if (categorie==null)throw new RuntimeException("User inexistant !");
 		return categorie;
 	}
@@ -129,7 +129,7 @@ public class ProduitMetierImpl implements ProduitMetier {
 
 	@Override
 	public Cuisine getCuisine(Long idC) {
-		Cuisine cuisine= cuisineRepository.getOne(idC) ;
+		Cuisine cuisine= cuisineRepository.getfinOne(idC) ;
 		if (cuisine==null)throw new RuntimeException("cuisine inexistant !");
 		return cuisine;
 	}

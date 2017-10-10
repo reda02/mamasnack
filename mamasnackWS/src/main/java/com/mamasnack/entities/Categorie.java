@@ -1,16 +1,25 @@
 package com.mamasnack.entities;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+@JsonSerialize
+@JsonInclude
 @Entity
 public class Categorie implements Serializable {
 	
@@ -21,7 +30,6 @@ public class Categorie implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long idCategorie;
-	@NotNull
 	@Size(min=4,max=20)
 	private String nomCategorie;
 	@Size(min=4)
@@ -29,8 +37,9 @@ public class Categorie implements Serializable {
 	@Lob
 	private byte[] photo;
 	private String nomPhoto;
-	@OneToMany(mappedBy="categorie")
-	private Collection<Produit>produit ;
+	@JsonManagedReference("cat")
+	@OneToMany(mappedBy="categorie", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+	private List<Produit>produit ;
 	
 	
 	
@@ -64,15 +73,17 @@ public class Categorie implements Serializable {
 	public void setNomPhoto(String nomPhoto) {
 		this.nomPhoto = nomPhoto;
 	}
-	public Collection<Produit> getProduit() {
+	@JsonIgnore
+	public List<Produit> getProduit() {
 		return produit;
 	}
-	public void setProduit(Collection<Produit> produit) {
+	@JsonSetter
+	public void setProduit(List<Produit> produit) {
 		this.produit = produit;
 	}
 	public Categorie() {
 		super();
-		// TODO Auto-generated constructor stub
+		
 	}
 	public Categorie(String nomCategorie, String description, byte[] photo, String nomPhoto) {
 		super();

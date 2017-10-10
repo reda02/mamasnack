@@ -1,7 +1,6 @@
 package com.mamasnack.metier;
 
 import java.util.List;
-
 import javax.persistence.EntityExistsException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +47,7 @@ public class UserMetierImpl implements UserMetier{
 	@Override
 	public User getUser(Long idUser) {
 	
-		User user= userRepository.getOne(idUser) ;
+		User user= userRepository.findOne(idUser) ;
 		if (user==null)throw new RuntimeException("User inexistant !");
 		return user;
 	}
@@ -60,19 +59,53 @@ public class UserMetierImpl implements UserMetier{
 	}
 
 	@Override
-	public User findUserbyName(String nameUser) {
+	public List<User> findUserbyName(String nameUser) {
 	
 		return userRepository.findUserByName(nameUser);
 	}
 
 	@Override
-	public void attribueRole(User u, Role e) {
-		
-		u.getRole().add(e) ;
-		userRepository.save(u);
+	public void attribueRole(Long idUser, Long idRole) {
+	
+		User u = getUser(idUser);
+		Role r = getRole(idRole);
+		List<Role> roles = findRolebyUser(idUser);
+		for(Role roul : roles){
+			System.out.println("le role existe dans BD "+roul.getIdRole());
+	         }
+		   if(roles.contains(r) ){
+				System.out.println("le role existe deja ");
+				
+			}else{
+				roles.add(r);
+				u.setRole(roles); 
+				userRepository.save(u);
+			}
+			
 
 	}
 
+	@Override
+	public void retirerRole(Long idUser, Long idRole) {
+	
+		User u = getUser(idUser);
+		Role r = getRole(idRole);
+		List<Role> roles = findRolebyUser(idUser);
+		 //for(Role roul : roles){
+		 //	System.out.println("le role existe dans BD "+roul.getIdRole());
+	     //    }
+		   if(roles.contains(r) ){
+				roles.remove(r);
+				u.setRole(roles); 
+				userRepository.save(u);
+			}else{
+				System.out.println("le role not existe in BD ");
+			}
+			
+
+			
+
+	}
 	@Override
 	public Role addRole(Role e) {
 	
@@ -83,6 +116,18 @@ public class UserMetierImpl implements UserMetier{
 	public List<User> findUsersbyRole(Long idRole) {
 
 		return userRepository.findUserbyRole(idRole);
+	}
+
+	@Override
+	public List<Role> findRolebyUser(Long iduser) {
+
+		return roleRepository.findRolebyUser(iduser);
+	}
+	@Override
+	public Role getRole(Long idRole) {
+		Role role= roleRepository.findOne(idRole) ;
+		if (role==null)throw new RuntimeException("role inexistant !");
+		return role;
 	}
 
 }

@@ -45,11 +45,12 @@ public class Role  implements Serializable{
 		super();
 		this.roleName = roleName;
 	}
-	@JsonIgnore
-	@XmlTransient
+	
 	public List<User> getUser() {
 		return User;
 	}
+	@JsonIgnore
+	@XmlTransient
 	public void setUser(List<User> user) {
 		User = user;
 	}
