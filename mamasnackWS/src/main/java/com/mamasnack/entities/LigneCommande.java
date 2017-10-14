@@ -2,11 +2,15 @@ package com.mamasnack.entities;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Entity
 public class LigneCommande   implements Serializable{
 	/**
@@ -18,10 +22,14 @@ public class LigneCommande   implements Serializable{
 	private Long idLigneCommande;
 	private Double prix;
 	private int quantite;
-	@ManyToOne
+	
+	@JsonManagedReference
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="idProduit")
 	private Produit produit ;
-	@ManyToOne(targetEntity=Commande.class)
+	
+	@JsonBackReference("cmd")
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="idCommande")
 	private Commande commande ;
 	

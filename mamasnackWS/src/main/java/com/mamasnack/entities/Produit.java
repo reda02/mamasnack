@@ -2,6 +2,7 @@ package com.mamasnack.entities;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,14 +11,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 @Entity
@@ -51,7 +50,8 @@ public class Produit implements Serializable {
 	private Cuisine cuisine ;
 	
 	
-	
+	@OneToMany(mappedBy="produit",fetch=FetchType.LAZY)
+		private List<LigneCommande> ligneCommandes ;
 	
 	@JsonIgnore
 	public Cuisine getCuisine() {
@@ -136,6 +136,7 @@ public class Produit implements Serializable {
 		this.categorie = categorie;
 		this.cuisine = cuisine;
 	}
+
 	
 
 	

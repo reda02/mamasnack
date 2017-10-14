@@ -38,16 +38,17 @@ public class CommandeMetierImpl implements CommandeMetier{
 		return commandeRepository.findAll();
 	}
 
-	@Override
-	public List<Commande> listCommandesParUser(Long idUser) {
-		
-		return null ;// commandeRepository.findCommandesParUser(idUser);
-	}
 
 	@Override
 	public List<Commande> listCommandesParProduit(Long idProduit) {
 		
-		return null ;//commandeRepository.findCommandesParProduit(idProduit);
+		return commandeRepository.findCommandesParProduit(idProduit);
+	}
+
+	@Override
+	public List<Commande> listCommandesParUser(Long idUser) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

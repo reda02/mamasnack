@@ -19,6 +19,7 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class User implements Serializable{
@@ -49,8 +50,12 @@ public class User implements Serializable{
 	private String password;
 	private boolean actived;
 	private boolean mamaActived;
+	
+	@JsonManagedReference("commande")
 	@OneToMany(mappedBy="user",fetch=FetchType.LAZY)
 	private Collection<Commande>commande;
+	
+	@JsonManagedReference("role")
 	@ManyToMany(targetEntity=Role.class)
 	@JoinTable(name="UsersAndRoles",
 	joinColumns=@JoinColumn(name="idUser"),
