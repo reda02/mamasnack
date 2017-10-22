@@ -1,8 +1,8 @@
 package com.mamasnack.entities;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,11 +14,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-
+@JsonSerialize
+@JsonInclude
 @Entity
 public class Produit implements Serializable {
 	/**
@@ -35,31 +38,40 @@ public class Produit implements Serializable {
 	private boolean steleted;
 	private String photo;
 	private int quantite ;
+	
+    @JsonFormat(pattern="dd-MM-yyyy")
 	private Date dateAjout;
-	
-	
-	
-	@JsonBackReference("cat")
-	@ManyToOne(fetch = FetchType.EAGER)
+    
+	@ManyToOne
 	@JoinColumn(name="idCategorie")
 	private Categorie categorie ;
+
 	
-	@JsonBackReference("cuisine")
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name="idCuisine")
 	private Cuisine cuisine ;
+
+
+	@OneToMany(mappedBy="produit" , fetch = FetchType.LAZY)
+	private Collection<LigneCommande> items ;
 	
 	
-	@OneToMany(mappedBy="produit",fetch=FetchType.LAZY)
-		private List<LigneCommande> ligneCommandes ;
-	
-	@JsonIgnore
+	//@JsonBackReference("cuisine")
 	public Cuisine getCuisine() {
 		return cuisine;
 	}
 	@JsonSetter
 	public void setCuisine(Cuisine cuisine) {
 		this.cuisine = cuisine;
+	}
+	//@JsonBackReference("cat")
+	@JsonIgnore
+	public Categorie getCategorie() {
+		return categorie;
+	}
+	@JsonSetter
+	public void setCategorie(Categorie categorie) {
+		this.categorie = categorie;
 	}
 	public Long getIdProduit() {
 		return idProduit;
@@ -103,26 +115,20 @@ public class Produit implements Serializable {
 	public void setQuantite(int quantite) {
 		this.quantite = quantite;
 	}
-	@JsonIgnore
-	public Categorie getCategorie() {
-		return categorie;
-	}
-	@JsonSetter
-	public void setCategorie(Categorie categorie) {
-		this.categorie = categorie;
-	}
+
+
 	public Produit() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public Date getDateAjout() {
 		return dateAjout;
 	}
 	public void setDateAjout(Date dateAjout) {
 		this.dateAjout = dateAjout;
 	}
-	
+
 	public Produit(@Size(min = 1, max = 4) String designation, String description, Double prix, boolean steleted,
 			String photo, int quantite, Date dateAjout, Categorie categorie, Cuisine cuisine) {
 		super();
@@ -136,8 +142,20 @@ public class Produit implements Serializable {
 		this.categorie = categorie;
 		this.cuisine = cuisine;
 	}
+	@Override
+	public String toString() {
+		return "Produit [idProduit=" + idProduit + ", designation=" + designation + ", description=" + description
+				+ ", prix=" + prix + ", steleted=" + steleted + ", photo=" + photo + ", quantite=" + quantite
+				+ ", dateAjout=" + dateAjout + ", categorie=" + categorie + ", cuisine=" + cuisine + "]";
+	}
 
-	
+	@JsonIgnore
+	public Collection<LigneCommande> getItems() {
+		return items;
+	}
+	@JsonSetter
+	public void setItems(Collection<LigneCommande> items) {
+		this.items = items;
+	}
 
-	
 }

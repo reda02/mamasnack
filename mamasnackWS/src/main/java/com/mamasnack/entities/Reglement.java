@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Entity
 public class Reglement implements Serializable {
 	
@@ -18,6 +20,7 @@ public class Reglement implements Serializable {
 	@Id
 	private int numCarte;
 	private Double montant;
+	@JsonFormat(pattern="dd-MM-yyyy")
 	private Date dateRegelement;
 	private int codeCarte;
 	private String typeCarte;

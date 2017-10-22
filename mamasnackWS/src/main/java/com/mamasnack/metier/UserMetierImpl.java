@@ -3,6 +3,8 @@ package com.mamasnack.metier;
 import java.util.List;
 import javax.persistence.EntityExistsException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,8 @@ public class UserMetierImpl implements UserMetier{
 	private UserRepository userRepository ;
 	@Autowired
 	private RoleRepository roleRepository ;
-
+	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Override
 	public User addUser(User u) {
 		if (u.getIdUser() != null && userRepository.existsById(u.getIdUser())) {
@@ -35,11 +38,16 @@ public class UserMetierImpl implements UserMetier{
 	}
 
 	@Override
-	public User modifierUser(User u) {
+	public String modifierUser(User u) {
 		if (u.getIdUser() != null && !userRepository.existsById(u.getIdUser())) {
-			throw new EntityExistsException("There is already existing entity with such ID in the database.");
+		//	throw new EntityExistsException("There is already existing entity with such ID in the database.");
+			logger.error(getClass().getName(),
+				    "une erreur est produite lors de l'exécution du web service updateuser : ");
+
+			return "NOK";
 		}
-		return userRepository.save(u);
+		userRepository.save(u);
+		return "OK";
 	}
 
 

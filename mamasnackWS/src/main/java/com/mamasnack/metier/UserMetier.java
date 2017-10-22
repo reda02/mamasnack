@@ -9,7 +9,7 @@ public interface UserMetier {
 	
 	public User addUser(User u);
 	public void supprimerUser(Long idUser) ;
-	public User modifierUser(User u);
+	public String modifierUser(User u);
 	public User getUser(Long idUser); 
 	
 	public List<User> listUsers();

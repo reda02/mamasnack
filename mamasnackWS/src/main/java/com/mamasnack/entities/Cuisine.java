@@ -1,17 +1,23 @@
 package com.mamasnack.entities;
 
 import java.io.Serializable;
+
 import java.util.Collection;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+@JsonSerialize
+@JsonInclude
 @Entity
 public class Cuisine  implements Serializable{
 
@@ -27,8 +33,9 @@ public class Cuisine  implements Serializable{
 	private Long idCuisine ;
 	private String nameCuisine ;
 	private String langue ;
-	@JsonManagedReference("cuisine")
-	@OneToMany(mappedBy="categorie")
+	
+	//@JsonManagedReference("cuisine")
+	@OneToMany(mappedBy="cuisine", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
 	private Collection<Produit>produit ;
 	
 	public Long getIdCuisine() {
@@ -49,7 +56,7 @@ public class Cuisine  implements Serializable{
 	public void setLangue(String langue) {
 		this.langue = langue;
 	}
-	@JsonIgnore
+    @JsonIgnore
 	public Collection<Produit> getProduit() {
 		return produit;
 	}

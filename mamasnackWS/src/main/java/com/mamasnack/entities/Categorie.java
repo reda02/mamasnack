@@ -3,7 +3,6 @@ package com.mamasnack.entities;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -15,7 +14,6 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonSerialize
@@ -30,15 +28,14 @@ public class Categorie implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long idCategorie;
-	@Size(min=4,max=20)
 	private String nomCategorie;
 	@Size(min=4)
 	private String description;
 	@Lob
 	private byte[] photo;
 	private String nomPhoto;
-	@JsonManagedReference("cat")
-	@OneToMany(mappedBy="categorie", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+	//@JsonManagedReference("cat")@OneToMany(mappedBy="user")
+	@OneToMany(mappedBy="categorie",fetch=FetchType.LAZY)
 	private List<Produit>produit ;
 	
 	
@@ -73,6 +70,7 @@ public class Categorie implements Serializable {
 	public void setNomPhoto(String nomPhoto) {
 		this.nomPhoto = nomPhoto;
 	}
+	
 	@JsonIgnore
 	public List<Produit> getProduit() {
 		return produit;

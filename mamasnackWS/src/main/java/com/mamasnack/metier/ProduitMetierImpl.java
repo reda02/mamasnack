@@ -28,19 +28,21 @@ public class ProduitMetierImpl implements ProduitMetier {
 	@Override
 	public Long ajouterProduit(Produit p, Long IdCat) {
 		
-		//p.setCategorie(getCategorie(IdCat));
-		if (p.getIdProduit() != null && produitRepository.existsById(p.getIdProduit())) {
-			throw new EntityExistsException("There is already existing entity with such ID in the database.");
-		}
+	
 		produitRepository.save(p);
 		return p.getIdProduit();
+	}
+	@Override
+	public List<Produit> produitsParMotCle(String mc) {
+		
+		return produitRepository.findproduitParMotCle( mc);
 	}
 
 	@Override
 	public Produit getProduit(Long idPro) {
 		
 		Produit produit= produitRepository.findOne(idPro) ;
-		if (produit==null)throw new RuntimeException("produit inexistant !");
+		//if (produit==null)throw new RuntimeException("produit inexistant !");
 		return produit;
 	}
 
@@ -66,7 +68,7 @@ public class ProduitMetierImpl implements ProduitMetier {
 
 	@Override
 	public List<Produit> listProduitsParCategorie(Long idCat) {
-	
+		
 		return produitRepository.findProduitsParCategorie(idCat);
 	}
 
@@ -153,5 +155,7 @@ public class ProduitMetierImpl implements ProduitMetier {
 	public List<Cuisine> listCuisines() {
 		return cuisineRepository.findAll();
 	}
+
+	
 
 }

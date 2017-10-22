@@ -14,10 +14,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -40,22 +42,24 @@ public class User implements Serializable{
 	@Size(min=1,max=10)
 	private String nomUser;
 	private String prenomUser;
+	@Email
 	private String email;
 	private String photo;
 	private String adresse;
 	private int tel;
 	private String ville;
 	private int codePostale;
+	@JsonFormat(pattern="dd-MM-yyyy")
 	private Date dateNaissonce;
 	private String password;
 	private boolean actived;
 	private boolean mamaActived;
 	
-	@JsonManagedReference("commande")
+	//@JsonManagedReference("commande")
 	@OneToMany(mappedBy="user",fetch=FetchType.LAZY)
 	private Collection<Commande>commande;
 	
-	@JsonManagedReference("role")
+	//@JsonManagedReference("role")
 	@ManyToMany(targetEntity=Role.class)
 	@JoinTable(name="UsersAndRoles",
 	joinColumns=@JoinColumn(name="idUser"),

@@ -1,6 +1,7 @@
 package com.mamasnack.entities;
 
 import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -9,8 +10,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 @Entity
 public class LigneCommande   implements Serializable{
 	/**
@@ -23,12 +31,12 @@ public class LigneCommande   implements Serializable{
 	private Double prix;
 	private int quantite;
 	
-	@JsonManagedReference
+	//@JsonBackReference("produit")
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="idProduit")
 	private Produit produit ;
 	
-	@JsonBackReference("cmd")
+	//@JsonBackReference("commande")
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="idCommande")
 	private Commande commande ;
@@ -51,15 +59,20 @@ public class LigneCommande   implements Serializable{
 	public void setQuantite(int quantite) {
 		this.quantite = quantite;
 	}
+	@JsonIgnore
 	public Produit getProduit() {
 		return produit;
 	}
+	@JsonSetter
 	public void setProduit(Produit produit) {
 		this.produit = produit;
 	}
+	
+	@JsonIgnore
 	public Commande getCommande() {
 		return commande;
 	}
+	@JsonSetter
 	public void setCommande(Commande commande) {
 		this.commande = commande;
 	}
@@ -67,10 +80,11 @@ public class LigneCommande   implements Serializable{
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public LigneCommande(Double prix, int quantite) {
+	public LigneCommande(Double prix, int quantite, Commande commande) {
 		super();
 		this.prix = prix;
 		this.quantite = quantite;
+		this.commande = commande;
 	}
 	
 	

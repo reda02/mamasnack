@@ -15,6 +15,7 @@ public interface ProduitMetier {
 	
 	// Recherche Multicritère 
 	public List<Produit> listProduits();
+	public List<Produit> produitsParMotCle(String mc);
 	public List<Produit> listProduitsParCategorie(Long idCat) ;
 	public List<Produit> listProduitsParCuisine(Long idCuisine) ;
 	public List<Produit> listProduitsSelectionne() ;

@@ -1,8 +1,12 @@
 package com.mamasnack.metier;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.EntityExistsException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +23,7 @@ public class CommandeMetierImpl implements CommandeMetier{
 	private CommandeRepository commandeRepository ;
 	@Autowired
 	private LigneCommandeRepository ligneCommandeRepository ;
-	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Override
 	public Commande enrigistrerCommande(Panier p, User u) {
 		
@@ -31,10 +35,23 @@ public class CommandeMetierImpl implements CommandeMetier{
 			ligneCommandeRepository.save(lc);
 		return c;
 	}
+	
+	
+	
+	@Override
+	public Commande getCommandeById(Long idCmd) {
+		Commande commande= commandeRepository.findOne(idCmd) ;
+		if (commande==null)throw new RuntimeException("Commande inexistant !");
+		    logger.debug("Debug message");
+	        logger.info("Info message");
+	        logger.warn("Warn message");
+	        logger.error("Error message");
+		return commande;
+	}
 
 	@Override
 	public List<Commande> listCommandes() {
-		
+		  logger.info("Info message");
 		return commandeRepository.findAll();
 	}
 
@@ -50,5 +67,99 @@ public class CommandeMetierImpl implements CommandeMetier{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	// Gerer Lignes de Commandes
+	
+	@Override
+	public List<LigneCommande> getAllLigneDeCommande(long commandeId) {
+		
+		
+		return ligneCommandeRepository.findAllLigneDeCommande(commandeId) ;
+	}
+
+	@Override
+	public LigneCommande getLigneDeCommandeById(long commandeId, long ligneDeCommandeId) {
+	
+		 Commande commande = getCommandeById(commandeId);
+
+	        Collection<LigneCommande> ligneDeCommandes = commande.getItems();
+
+	        for(LigneCommande ligneCommande : ligneDeCommandes){
+	        	
+	        	
+	        	 if(ligneCommande.getIdLigneCommande().equals(ligneDeCommandeId) ){
+	        		 
+	        		 return ligneCommande;
+	        	 }
+	        	
+	        }
+			return null;
+	      
+	        
+	        
+	        
+
+	       
+	}
+
+	@Override
+	public void addLigneDeCommande(LigneCommande ligneDeCommande) {
+		
+	 //Commande commande = getCommandeById(ligneDeCommande.getCommande().getIdCommande());
+
+     //   Collection<LigneCommande> ligneDeCommandes =  commande.getItems();
+		if (ligneDeCommande.getIdLigneCommande()!= null && ligneCommandeRepository.existsById(ligneDeCommande.getIdLigneCommande())) {
+			throw new EntityExistsException("There is already existing entity ligneDeCommande with such ID in the database.");
+		}
+		//ligneDeCommande.setCommande(commande);
+		ligneCommandeRepository.save(ligneDeCommande);
+     
+		
+	}
+
+	@Override
+	public LigneCommande modifyLigneDeCommande(long commandeId, LigneCommande ligneDeCommandeToSet) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public LigneCommande removeLigneDeCommande(long commandeId, long ligneDeCommandeId) {
+		    
+		Commande commande = getCommandeById(commandeId);
+
+
+            Collection<LigneCommande> ligneDeCommandes =  commande.getItems();
+            LigneCommande ligneCmdExiste = getLigneDeCommandeById(commandeId, ligneDeCommandeId);
+            
+           for(LigneCommande ligneCommande : ligneDeCommandes){
+        	   
+        	   
+        	   if(ligneDeCommandes.contains(ligneCmdExiste) ){
+        		   
+	           commande.setTotal(commande.getTotal() - (ligneCommande.getPrix() * ligneCommande.getQuantite()));
+	           ligneDeCommandes.remove(ligneDeCommandeId);
+	           commandeRepository.save(commande);
+        	   }
+        	   
+        	   System.out.println("le ligneCommande n'existe pas ");
+        	   }	
+	        return ligneCmdExiste;
+	}
+
+
+
+	@Override
+	public String addCommande(Commande commande) {
+		//p.setCategorie(getCategorie(IdCat));
+				if (commande.getIdCommande() != null && commandeRepository.existsById(commande.getIdCommande())) {
+					throw new EntityExistsException("There is already existing entity with such ID in the database.");
+				}
+				commandeRepository.save(commande);
+				return "OK";
+		
+	}
+
+
 
 }

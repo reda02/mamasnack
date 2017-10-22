@@ -18,6 +18,9 @@ import com.mamasnack.entities.Commande;
 				+ "where c.produit.idProduit = r.idProduit"
 				+ " and r.idProduit like :x")
 		//@Query("SELECT o FROM Commande o WHERE  o.idCommande like :x")
-		public List<Commande> findCommandesParProduit(@Param("x") Long c); 
+		public List<Commande> findCommandesParProduit(@Param("x") Long c);
+		
+		@Query("SELECT o FROM Commande o WHERE  o.idCommande like :x")
+		public Commande findOne(@Param("x") Long idCmd); 
 		
 	}

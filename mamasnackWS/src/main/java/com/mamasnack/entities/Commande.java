@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,9 +16,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+@JsonSerialize
+@JsonInclude
 @Entity
 public class Commande  implements Serializable {
 	/**
@@ -27,15 +32,21 @@ public class Commande  implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long idCommande;
+	
+	private double total;
+	
 	@Column(name="etatCommande", nullable = false, length = 8 )
     @Enumerated(value = EnumType.STRING)
 	private EtatCommande etatCommande;
 	
+	@JsonFormat(pattern="dd-MM-yyyy")
 	private Date dateCommnade;
 	
-	@JsonManagedReference("cmd")
-	@OneToMany(mappedBy="commande" , targetEntity=LigneCommande.class)
+	//@JsonManagedReference("commande")
+	@OneToMany(mappedBy="commande" , fetch = FetchType.LAZY)
 	private Collection<LigneCommande> items ;
+	
+	
 	@ManyToOne
 	@JoinColumn(name="idUser")
 	private User user ;
@@ -90,6 +101,12 @@ public class Commande  implements Serializable {
 	@JsonIgnore
 	public void setReglement(Reglement reglement) {
 		this.reglement = reglement;
+	}
+	public double getTotal() {
+		return total;
+	}
+	public void setTotal(double d) {
+		this.total = d;
 	}
 
 	

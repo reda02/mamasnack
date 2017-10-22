@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mamasnack.entities.Categorie;
 import com.mamasnack.entities.Cuisine;
 import com.mamasnack.entities.Produit;
@@ -27,9 +28,9 @@ public class ProduitRestService {
 	}
 
 	@RequestMapping(value="/getProduit/{idPro}",method=RequestMethod.GET)
-	public Produit getProduit(@PathVariable Long idPro) {
+	public String getProduit(@PathVariable Long idPro) {
 		
-		return produitMetier.getProduit(idPro);
+		return toJSON(produitMetier.getProduit(idPro));
 	}
 
 	@RequestMapping(value="/deleteProduit/{idPro}",method=RequestMethod.GET)
@@ -47,13 +48,18 @@ public class ProduitRestService {
 	public List<Produit> listProduits() {
 		return produitMetier.listProduits();
 	}
-//toDo
+    //toDo
 	@RequestMapping(value="/getProduitsParCat/{idCat}",method=RequestMethod.GET)
 	public List<Produit> listProduitsParCategorie(@PathVariable Long idCat) {
 		
 		return produitMetier.listProduitsParCategorie(idCat);
 		
 		
+	}
+	@RequestMapping(value="/getProduitsBykeyword/{keyword}",method=RequestMethod.GET )
+        public List<Produit> produitsParMotCle(@PathVariable String keyword) {
+		
+		return produitMetier.produitsParMotCle(keyword);
 	}
 	
 	
@@ -129,8 +135,24 @@ public class ProduitRestService {
 	}
 
 	@RequestMapping(value="/getAllCuisines",method=RequestMethod.GET)
-	public List<Cuisine> listCuisines() {
-		return produitMetier.listCuisines();
+	public String listCuisines() {
+		return toJSON(produitMetier.listCuisines());
 	}
 
+	
+	public static String toJSON(Object object) 
+    { 
+        if ( object == null ){
+        return "l'objet n'existe pas"; 
+        } 
+        try { 
+           ObjectMapper mapper = new ObjectMapper(); 
+           return mapper.writeValueAsString(object); 
+           } 
+        catch (Exception e) { 
+         e.printStackTrace(); 
+        } 
+      return "{}"; 
+      
+}
 }

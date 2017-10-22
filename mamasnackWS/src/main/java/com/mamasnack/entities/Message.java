@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Entity
 public class Message  implements Serializable {
 	/**
@@ -18,6 +20,7 @@ public class Message  implements Serializable {
 	private Long idMsg;
 	private String distinataire;
 	private String contenuMesg;
+	@JsonFormat(pattern="dd-MM-yyyy")
 	private Date dateEnregistrement;
 
 	@ManyToMany(mappedBy = "message")
