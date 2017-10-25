@@ -103,18 +103,17 @@ public class CommandeMetierImpl implements CommandeMetier{
 	}
 
 	@Override
-	public void addLigneDeCommande(LigneCommande ligneDeCommande) {
-		
-	 //Commande commande = getCommandeById(ligneDeCommande.getCommande().getIdCommande());
+	public String addLigneDeCommande(LigneCommande ligneDeCommande) {
 
-     //   Collection<LigneCommande> ligneDeCommandes =  commande.getItems();
-		if (ligneDeCommande.getIdLigneCommande()!= null && ligneCommandeRepository.existsById(ligneDeCommande.getIdLigneCommande())) {
-			throw new EntityExistsException("There is already existing entity ligneDeCommande with such ID in the database.");
-		}
-		//ligneDeCommande.setCommande(commande);
-		ligneCommandeRepository.save(ligneDeCommande);
      
-		
+		if (ligneDeCommande.getIdLigneCommande() != null && !ligneCommandeRepository.existsById(ligneDeCommande.getIdLigneCommande())) {
+			logger.error(getClass().getName()+
+				    "idUser est null de l'exécution du web service addLigneDeCommande : ");
+
+			return "NOK";
+	}
+		ligneCommandeRepository.save(ligneDeCommande);
+	    return "OK";
 	}
 
 	@Override

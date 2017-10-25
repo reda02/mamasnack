@@ -26,5 +26,5 @@ public interface CommandeMetier {
 	    public LigneCommande modifyLigneDeCommande(long commandeId, LigneCommande ligneDeCommandeToSet);
 	    public LigneCommande removeLigneDeCommande(long commandeId, long ligneDeCommandeId);
 
-	    public void addLigneDeCommande(LigneCommande ligneDeCommande);
+	    public String addLigneDeCommande(LigneCommande ligneDeCommande);
 }

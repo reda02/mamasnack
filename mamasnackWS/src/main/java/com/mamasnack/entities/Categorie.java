@@ -3,6 +3,7 @@ package com.mamasnack.entities;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -35,7 +36,7 @@ public class Categorie implements Serializable {
 	private byte[] photo;
 	private String nomPhoto;
 	//@JsonManagedReference("cat")@OneToMany(mappedBy="user")
-	@OneToMany(mappedBy="categorie",fetch=FetchType.LAZY)
+	@OneToMany(mappedBy="categorie", cascade=CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<Produit>produit ;
 	
 	

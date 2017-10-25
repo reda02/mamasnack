@@ -57,6 +57,7 @@ public class Produit implements Serializable {
 	
 	
 	//@JsonBackReference("cuisine")
+	@JsonIgnore
 	public Cuisine getCuisine() {
 		return cuisine;
 	}

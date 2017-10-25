@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.persistence.EntityExistsException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,12 +27,19 @@ public class ProduitMetierImpl implements ProduitMetier {
 	@Autowired
 	private CuisineRepository cuisineRepository ;
 	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Override
-	public Long ajouterProduit(Produit p, Long IdCat) {
+	public String ajouterProduit(Produit p, Long IdCat) {
 		
+		
+		if (p.getIdProduit() != null && !produitRepository.existsById(p.getIdProduit())) {
+				logger.error(getClass().getName()+
+					    "idUser est null de l'exécution du web service addUser : ");
+				return "NOK";
+		}
 	
 		produitRepository.save(p);
-		return p.getIdProduit();
+		return "OK";
 	}
 	@Override
 	public List<Produit> produitsParMotCle(String mc) {
@@ -42,22 +51,39 @@ public class ProduitMetierImpl implements ProduitMetier {
 	public Produit getProduit(Long idPro) {
 		
 		Produit produit= produitRepository.findOne(idPro) ;
-		//if (produit==null)throw new RuntimeException("produit inexistant !");
+		if (produit==null)throw new RuntimeException("produit inexistant !");
 		return produit;
 	}
 
 	@Override
-	public void supprimerProduit(Long idPro) {
-		produitRepository.deleteById(idPro);	
+	public String supprimerProduit(Long idPro) {
+		Produit produit= getProduit(idPro) ;
+		if (idPro == null ) {
+			//	throw new EntityExistsException("There is already existing entity with such ID in the database.");
+			
+				logger.error(getClass().getName()+
+					    "idUser est null de l'exécution du web service supprimerProduit : ");
+
+				return "NOK";
+			}else if (produit.getIdProduit() ==null){
+				
+				logger.error(getClass().getName()+
+					    "id Produit non existe dans BD ;erreur est produite lors de l'exécution du web service supprimerProduit : ");
+				return "NOK";
+			}
+		produitRepository.deleteById(idPro);
+		return "OK";
 	}
 
 	@Override
-	public void modifierProduit(Produit p) {
+	public String modifierProduit(Produit p) {
 		if (p.getIdProduit() != null && !produitRepository.existsById(p.getIdProduit())) {
-			throw new EntityExistsException("There isn't already existing entity with such ID in the database.");
+			logger.error(getClass().getName()+
+				    "une erreur est produite lors de l'exécution du web service modifierProduit : ");
+			return "NOK";
 		}
 		produitRepository.save(p);
-		
+    	return "OK";
 	}
 
 	@Override
@@ -102,17 +128,37 @@ public class ProduitMetierImpl implements ProduitMetier {
 	}
 
 	@Override
-	public void supprimerCategorie(Long idCat) {
+	public String supprimerCategorie(Long idCat) {
+	
+		Categorie categorie= getCategorie(idCat) ;
+		if (idCat == null ) {
+			//	throw new EntityExistsException("There is already existing entity with such ID in the database.");
+			
+				logger.error(getClass().getName()+
+					    "id Categorie est null de l'exécution du web service supprimerCategorie : ");
+				return "NOK";
+			
+		}else if (categorie.getIdCategorie() ==null){
+				
+				logger.error(getClass().getName()+
+					    "id Categorie non existe dans BD ;erreur est produite lors de l'exécution du web service supprimerCategorie : ");
+				return "NOK";
+			}
 		categorieRepository.deleteById(idCat);
+		return "OK";
 		
 	}
 
 	@Override
-	public void modifierCategorie(Categorie c) {
-		if (c.getIdCategorie()!= null && !categorieRepository.existsById(c.getIdCategorie())) {
-			throw new EntityExistsException("There is already existing entity with such ID in the database.");
+	public String modifierCategorie(Categorie c) {
+		
+		if (c.getIdCategorie() != null && !produitRepository.existsById(c.getIdCategorie())) {
+			logger.error(getClass().getName()+
+				    "une erreur est produite lors de l'exécution du web service modifierCategorie : ");
+			return "NOK";
 		}
 		categorieRepository.save(c);
+    	return "OK";
 	}
 
 	@Override
@@ -121,12 +167,14 @@ public class ProduitMetierImpl implements ProduitMetier {
 	}
 
 	@Override
-	public Long ajouterCuisine(Cuisine c) {
+	public String ajouterCuisine(Cuisine c) {
 		if (c.getIdCuisine() != null && cuisineRepository.existsById(c.getIdCuisine())) {
-			throw new EntityExistsException("There is already existing entity with such ID in the database.");
+			logger.error(getClass().getName()+
+				    "IdCuisine est null de l'exécution du web service ajouterCuisine : ");
+			return "NOK";
 		}
 		cuisineRepository.save(c);
-		return c.getIdCuisine();
+	 return "OK";
 	}
 
 	@Override
@@ -137,18 +185,35 @@ public class ProduitMetierImpl implements ProduitMetier {
 	}
 
 	@Override
-	public void supprimerCuisine(Long idCat) {
-		cuisineRepository.deleteById(idCat);
+	public String supprimerCuisine(Long idCuis) {
+		Cuisine cuisine= getCuisine(idCuis) ;
+		if (idCuis == null ) {
+			//	throw new EntityExistsException("There is already existing entity with such ID in the database.");
+			
+				logger.error(getClass().getName()+
+					    "id Categorie est null de l'exécution du web service supprimerCategorie : ");
+				return "NOK";
+			
+		}else if (cuisine.getIdCuisine()==null){
+				
+				logger.error(getClass().getName()+
+					    "id Categorie non existe dans BD ;erreur est produite lors de l'exécution du web service supprimerCuisine : ");
+				return "NOK";
+			}
+		cuisineRepository.deleteById(idCuis);
+		return "OK";
 		
 	}
 
 	@Override
-	public void modifierCuisine(Cuisine c) {
-		if (c.getIdCuisine()!= null && !cuisineRepository.existsById(c.getIdCuisine())) {
-			throw new EntityExistsException("There is already existing entity with such ID in the database.");
+	public String modifierCuisine(Cuisine c) {
+		if (c.getIdCuisine() != null && !produitRepository.existsById(c.getIdCuisine())) {
+			logger.error(getClass().getName()+
+				    "une erreur est produite lors de l'exécution du web service modifierCuisine : ");
+			return "NOK";
 		}
 		cuisineRepository.save(c);
-		
+    	return "OK";
 	}
 
 	@Override

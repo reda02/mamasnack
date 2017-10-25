@@ -25,6 +25,12 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	   @Query("SELECT o FROM User o WHERE  o.idUser like :x")
      	public User findOne(@Param("x") Long idUser);
 
+	   @Query("SELECT o FROM User o WHERE  o.idUser like :x")
+	   public boolean existsparID(@Param("x")  Long idUser);
+
+	   @Query("SELECT o FROM User o WHERE  o.email like :x")
+	   public User findUsesbyEmail(@Param("x")  String email);
+
 
 	
 }

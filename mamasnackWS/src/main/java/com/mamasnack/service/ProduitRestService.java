@@ -1,7 +1,13 @@
 package com.mamasnack.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,65 +22,211 @@ import com.mamasnack.entities.Categorie;
 import com.mamasnack.entities.Cuisine;
 import com.mamasnack.entities.Produit;
 import com.mamasnack.metier.ProduitMetier;
+
 @RestController
 public class ProduitRestService {
 	@Autowired
 	private ProduitMetier produitMetier ;
-	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@RequestMapping(value="/addProduit",method=RequestMethod.POST , consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public Long ajouterProduit(@RequestBody Produit p, Long IdCat) {
-		
-		return produitMetier.ajouterProduit(p, IdCat);
+	public String ajouterProduit(@RequestBody Produit p, Long IdCat) throws JSONException {
+		String Add = null;
+		JSONObject resultat = new JSONObject();
+		try {
+			Add =  produitMetier.ajouterProduit(p, IdCat);
+			resultat.put("errMess", Add);
+		    } catch (Exception e) {
+			resultat.put("errMess", e.getMessage());
+			logger.error(getClass().getName()+
+					"une erreur est produite lors de l'exécution du web service ajouterProduit : " + e.getMessage());
+		}
+		return resultat.toString();
 	}
+	
 
 	@RequestMapping(value="/getProduit/{idPro}",method=RequestMethod.GET)
-	public String getProduit(@PathVariable Long idPro) {
+	public String getProduit(@PathVariable Long idPro) throws JSONException {
 		
-		return toJSON(produitMetier.getProduit(idPro));
+
+		Produit produit = null;
+		JSONObject resultat = new JSONObject();
+		try {
+			produit = produitMetier.getProduit(idPro);
+			ObjectMapper mapper = new ObjectMapper(); 
+
+			resultat.put("produit", new  JSONObject(mapper.writeValueAsString(produit).toString()));
+			resultat.put("errMess", "");
+		} catch (Exception e) {
+			resultat.put("errMess", e.getMessage());
+			logger.error(getClass().getName()+
+					"une erreur est produite lors de l'exécution du web service getProduit : " + e.getMessage());
+		}
+		return resultat.toString();
 	}
 
 	@RequestMapping(value="/deleteProduit/{idPro}",method=RequestMethod.GET)
-	public void supprimerProduit(@PathVariable Long idPro) {
-		produitMetier.supprimerProduit(idPro);
-		
+	public String supprimerProduit(@PathVariable Long idPro) throws JSONException {
+		String supp=null;
+		JSONObject resultat = new JSONObject();
+		try {
+			supp =  produitMetier.supprimerProduit(idPro);
+			resultat.put("errMess", supp);
+		} catch (Exception e) {
+			resultat.put("errMess", e.getMessage());
+			logger.error(getClass().getName()+
+					"une erreur est produite lors de l'exécution du web service ajouterProduit : " + e.getMessage());
+		}
+		return resultat.toString();
 	}
 
+	
 	@RequestMapping(value="/updateProduit",method=RequestMethod.POST)
-	public void modifierProduit(@RequestBody Produit p) {
-		produitMetier.modifierProduit(p);
+	public String modifierProduit(@RequestBody Produit p) throws JSONException {
+		String update = null;
+		JSONObject resultat = new JSONObject();
+		try {
+			update = produitMetier.modifierProduit(p);
+			resultat.put("updateMess", update);
+			resultat.put("errMess", "");
+		} catch (Exception e) {
+			resultat.put("errMess", e.getMessage());
+			logger.error(getClass().getName()+
+					"une erreur est produite lors de l'exécution du web service updateuser : " + e.getMessage());
+		}
+		return resultat.toString();
 	}
 
 	@RequestMapping(value="/getProduits",method=RequestMethod.GET)
-	public List<Produit> listProduits() {
-		return produitMetier.listProduits();
+	public String listProduits() throws JSONException {
+
+		List<Produit> produits = new ArrayList<>();
+		JSONObject resultat = new JSONObject();
+		JSONArray tab = new JSONArray();
+		try { 
+			produits = produitMetier.listProduits();
+			ObjectMapper mapper = new ObjectMapper(); 
+			resultat.put("errMess", "");
+			if (produits != null && !produits.isEmpty()) {
+				tab = new JSONArray(mapper.writeValueAsString(produits).toString());
+				resultat.put("produits", tab);
+			}else{
+				resultat.put("produits", "tabVide");
+			}
+			
+			  
+
+		} catch (Exception e) {
+			resultat.put("errMess", e.getMessage());
+			logger.error(getClass().getName()+
+					"une erreur est produite lors de l'exécution du web service getProduits() : " + e.getMessage());
+		}
+		return resultat.toString();
+
 	}
     //toDo
 	@RequestMapping(value="/getProduitsParCat/{idCat}",method=RequestMethod.GET)
-	public List<Produit> listProduitsParCategorie(@PathVariable Long idCat) {
+	public String listProduitsParCategorie(@PathVariable Long idCat) throws JSONException {
+	
 		
-		return produitMetier.listProduitsParCategorie(idCat);
-		
-		
+		List<Produit> produits = new ArrayList<>();
+		JSONObject resultat = new JSONObject();
+		JSONArray tab = new JSONArray();
+		try { 
+			produits = produitMetier.listProduitsParCategorie(idCat);
+			ObjectMapper mapper = new ObjectMapper(); 
+			resultat.put("errMess", "");
+			if (produits != null && !produits.isEmpty()) {
+				tab = new JSONArray(mapper.writeValueAsString(produits).toString());
+				resultat.put("produits", tab);
+			}else{
+				resultat.put("produits", "tabVide");
+			}  
+
+		} catch (Exception e) {
+			resultat.put("errMess", e.getMessage());
+			logger.error(getClass().getName()+
+					"une erreur est produite lors de l'exécution du web service getProduitsParCat() : " + e.getMessage());
+		}
+		return resultat.toString();
 	}
+	
 	@RequestMapping(value="/getProduitsBykeyword/{keyword}",method=RequestMethod.GET )
-        public List<Produit> produitsParMotCle(@PathVariable String keyword) {
-		
-		return produitMetier.produitsParMotCle(keyword);
+        public String produitsParMotCle(@PathVariable String keyword) throws JSONException {
+
+		List<Produit> produits = new ArrayList<>();
+		JSONObject resultat = new JSONObject();
+		JSONArray tab = new JSONArray();
+		try { 
+			produits = produitMetier.produitsParMotCle(keyword);
+			ObjectMapper mapper = new ObjectMapper(); 
+			resultat.put("errMess", "");
+			if (produits != null && !produits.isEmpty()) {
+				tab = new JSONArray(mapper.writeValueAsString(produits).toString());
+				resultat.put("produits", tab);
+			}else{
+				resultat.put("produits", "tabVide");
+			}  
+
+		} catch (Exception e) {
+			resultat.put("errMess", e.getMessage());
+			logger.error(getClass().getName()+
+					"une erreur est produite lors de l'exécution du web service getProduitsBykeyword() : " + e.getMessage());
+		}
+		return resultat.toString();
 	}
 	
 	
 	
 //toDo
 	@RequestMapping(value="/getProduitsParCuisine/{idCuisine}",method=RequestMethod.GET)
-	public List<Produit> listProduitsParCuisine(@PathVariable Long idCuisine) {
+	public String listProduitsParCuisine(@PathVariable Long idCuisine) throws JSONException {
 
-		return produitMetier.listProduitsParCuisine(idCuisine);
+		List<Produit> produits = new ArrayList<>();
+		JSONObject resultat = new JSONObject();
+		JSONArray tab = new JSONArray();
+		try { 
+			produits = produitMetier.listProduitsParCuisine(idCuisine);
+			ObjectMapper mapper = new ObjectMapper(); 
+			resultat.put("errMess", "");
+			if (produits != null && !produits.isEmpty()) {
+				tab = new JSONArray(mapper.writeValueAsString(produits).toString());
+				resultat.put("produits", tab);
+			}else{
+				resultat.put("produits", "tabVide");
+			}  
+
+		} catch (Exception e) {
+			resultat.put("errMess", e.getMessage());
+			logger.error(getClass().getName()+
+					"une erreur est produite lors de l'exécution du web service getProduitsParCuisine() : " + e.getMessage());
+		}
+		return resultat.toString();
 	}
 
 	@RequestMapping(value="/listProduitsSelectionne",method=RequestMethod.GET)
-	public List<Produit> listProduitsSelectionne() {
+	public String listProduitsSelectionne() throws JSONException {
 	
-		return produitMetier.listProduitsSelectionne();
+		List<Produit> produits = new ArrayList<>();
+		JSONObject resultat = new JSONObject();
+		JSONArray tab = new JSONArray();
+		try { 
+			produits = produitMetier.listProduitsSelectionne();
+			ObjectMapper mapper = new ObjectMapper(); 
+			resultat.put("errMess", "");
+			if (produits != null && !produits.isEmpty()) {
+				tab = new JSONArray(mapper.writeValueAsString(produits).toString());
+				resultat.put("produits", tab);
+			}else{
+				resultat.put("produits", "tabVide");
+			}  
+
+		} catch (Exception e) {
+			resultat.put("errMess", e.getMessage());
+			logger.error(getClass().getName()+
+					"une erreur est produite lors de l'exécution du web service listProduitsSelectionne() : " + e.getMessage());
+		}
+		return resultat.toString();
+		
 	}
 
 	@RequestMapping(value="/addCat",method=RequestMethod.POST)
@@ -109,28 +261,74 @@ public class ProduitRestService {
 	}
 
 	@RequestMapping(value="/addCuisines",method=RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public Long ajouterCuisine(@RequestBody Cuisine c) {
+	public String ajouterCuisine(@RequestBody Cuisine c) throws JSONException {
 	
-		return produitMetier.ajouterCuisine(c);
+		String Addc = null;
+		JSONObject resultat = new JSONObject();
+		try {
+			Addc =   produitMetier.ajouterCuisine(c);
+			resultat.put("errMess", Addc);
+		    } catch (Exception e) {
+			resultat.put("errMess", e.getMessage());
+			logger.error(getClass().getName()+
+					"une erreur est produite lors de l'exécution du web service ajouterProduit : " + e.getMessage());
+		}
+		return resultat.toString();
 	}
 
 	
 	// not working 
 	@RequestMapping(value="/getCuisine/{idC}",method=RequestMethod.GET)
-	public Cuisine getCuisine(@PathVariable Long idC) {
+	public String getCuisine(@PathVariable Long idC) throws JSONException {
 		
-		return produitMetier.getCuisine(idC);
+		Cuisine cuisine = null;
+		JSONObject resultat = new JSONObject();
+		try {
+			cuisine = produitMetier.getCuisine(idC);
+			ObjectMapper mapper = new ObjectMapper(); 
+
+			resultat.put("cuisine", new  JSONObject(mapper.writeValueAsString(cuisine).toString()));
+			resultat.put("errMess", "");
+		} catch (Exception e) {
+			resultat.put("errMess", e.getMessage());
+			logger.error(getClass().getName()+
+					"une erreur est produite lors de l'exécution du web service getCuisine : " + e.getMessage());
+		}
+		return resultat.toString();
 	}
 
 	@RequestMapping(value="/deleteCuisine",method=RequestMethod.POST)
-	public void supprimerCuisine(@PathVariable Long idCat) {
-		produitMetier.supprimerCategorie(idCat);
+	public String supprimerCuisine(@PathVariable Long idCat) throws JSONException {
+		
+		String supp=null;
+		JSONObject resultat = new JSONObject();
+		try {
+			supp =  produitMetier.supprimerCategorie(idCat);
+			resultat.put("errMess", supp);
+		} catch (Exception e) {
+			resultat.put("errMess", e.getMessage());
+			logger.error(getClass().getName()+
+					"une erreur est produite lors de l'exécution du web service supprimerCuisine : " + e.getMessage());
+		}
+		return resultat.toString();
 		
 	}
 
 	@RequestMapping(value="/updateCuisine",method=RequestMethod.POST)
-	public void modifierCuisine(@RequestBody Cuisine c) {
-		produitMetier.modifierCuisine(c);
+	public String modifierCuisine(@RequestBody Cuisine c) throws JSONException {
+		
+		String update = null;
+		JSONObject resultat = new JSONObject();
+		try {
+			update = produitMetier.modifierCuisine(c);
+			resultat.put("updateMess", update);
+			resultat.put("errMess", "");
+		} catch (Exception e) {
+			resultat.put("errMess", e.getMessage());
+			logger.error(getClass().getName()+
+					"une erreur est produite lors de l'exécution du web service modifierCuisine : " + e.getMessage());
+		}
+		return resultat.toString();
 		
 	}
 
