@@ -58,7 +58,7 @@ public class UserRestService {
 		} catch (Exception e) {
 			resultat.put("errMess", e.getMessage());
 			logger.error(getClass().getName()+
-					"une erreur est produite lors de l'exécution du web service deleteuser : " + e.getMessage());
+					"une erreur est produite lors de l'exécution du web service adduser : " + e.getMessage());
 		}
 		return resultat.toString();
 	}
@@ -141,7 +141,7 @@ public class UserRestService {
 				tab = new JSONArray(mapper.writeValueAsString(users).toString());
 				resultat.put("users", tab);
 			}else{
-				resultat.put("users", "tabVide");
+				resultat.put("users", "");
 			}
 			
 			resultat.put("errMess", "");  
@@ -267,6 +267,32 @@ public class UserRestService {
 		return resultat.toString();
 	
 	}
+	@RequestMapping(value="/getRoles",method=RequestMethod.GET)
+	public String getRoles() throws JSONException {
+		List<Role> getRoles = new ArrayList<>();
+		JSONObject resultat = new JSONObject();
+		JSONArray tab = new JSONArray(); 
+			try { 
+				getRoles = userMetier.getRoles();
+				ObjectMapper mapper = new ObjectMapper(); 
+
+				if (getRoles != null && !getRoles.isEmpty()) {
+					tab = new JSONArray(mapper.writeValueAsString(getRoles).toString());
+					resultat.put("users", tab);
+				}else{
+					resultat.put("users", "tabVide");
+				}
+				
+				resultat.put("errMess", "");  
+
+			} catch (Exception e) {
+				resultat.put("errMess", e.getMessage());
+				logger.error(getClass().getName()+
+						"une erreur est produite lors de l'exécution du web service findUserbyRole() : " + e.getMessage());
+			}
+			return resultat.toString();
+	
+	}
 	@RequestMapping(value="/userbyRole/{idRole}",method=RequestMethod.GET)
 	public String findUserbyRole(@PathVariable Long idRole) throws JSONException {
 		
@@ -282,7 +308,7 @@ public class UserRestService {
 				tab = new JSONArray(mapper.writeValueAsString(users).toString());
 				resultat.put("users", tab);
 			}else{
-				resultat.put("users", "tabVide");
+				resultat.put("users", "");
 			}
 			
 			resultat.put("errMess", "");  

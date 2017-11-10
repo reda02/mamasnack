@@ -1,9 +1,11 @@
 package com.mamasnack.entities;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @JsonFormat(shape= JsonFormat.Shape.OBJECT)
-public enum EtatCommande {
+public enum EtatCommande  implements Serializable{
 	
 	Initiale,
 	Preparation_Encours,
@@ -15,10 +17,9 @@ public enum EtatCommande {
 	Annule,
 	Remborse;
 	
-	  @Override
-      public String toString() {
-          return this.name().toLowerCase();
-      }
+	 public String getStatus() {
+	        return this.name();
+	    }
 	
 	
 

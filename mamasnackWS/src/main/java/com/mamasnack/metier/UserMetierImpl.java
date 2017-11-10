@@ -33,7 +33,9 @@ public class UserMetierImpl implements UserMetier{
 				return "NOK";
 		}
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		if(u.getPassword()!=null){
 		u.setPassword(passwordEncoder.encode(u.getPassword()));
+		}
 		userRepository.save(u);
 		return "OK";
 	}
@@ -72,7 +74,10 @@ public class UserMetierImpl implements UserMetier{
 			return "NOK";
 		}
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		u.setPassword(passwordEncoder.encode(u.getPassword()));
+	
+		if(u.getPassword()!=null){
+			u.setPassword(passwordEncoder.encode(u.getPassword()));
+			}
 		userRepository.save(u);
 		return "OK";
 	}
@@ -199,5 +204,12 @@ public class UserMetierImpl implements UserMetier{
 		
 		
 	}
+
+
+		@Override
+		public List<Role> getRoles() {
+
+			return roleRepository.findAll();
+		}
 
 }
